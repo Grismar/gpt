@@ -1,0 +1,4 @@
+pywin32
+conffu
+openai
+rich
