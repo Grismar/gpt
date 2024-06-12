@@ -6,7 +6,8 @@ param(
 $originalWorkingDirectory = Get-Location
 
 $scriptDirectory = Split-Path -Path $MyInvocation.MyCommand.Definition -Parent
-Set-Location -Path $scriptDirectory
+$parentDirectory = Split-Path -Path $scriptDirectory -Parent
+Set-Location -Path $parentDirectory
 
 # configuration
 $envFolder = ".\.venv"
