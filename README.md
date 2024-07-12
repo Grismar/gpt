@@ -20,6 +20,18 @@ This will create a virtualenv environment.
 
 Once created, the requirements will from [requirements.txt](requirements.txt) will be installed.
 
+After installation, you can run the script by calling `gpt.ps1` from the root of the repository.
+```commandline
+PS C:\Users\john.doe> .\gpt.ps1
+```
+However, it is recommended you either set up an alias or add the script to your path, so you can call it from anywhere:
+```commandline
+PS C:\Users\john.doe> Set-Alias gpt .\gpt.ps1
+```
+If you want to refer to `gpt.ps1` from other scripts on the path, keep in mind that piping data to the script will require some additional code in the script. Examples are provided in the `example` folder.
+
+## Usage
+
 Before you can use the script, you need to provide the API key once:
 ```commandline
 PS C:\Users\john.doe> gpt just a test
@@ -52,10 +64,6 @@ PS C:\Users\john.doe> gpt -k <an actual API key here> -dak -q "How do I remove t
 
 PS C:\Users\john.doe>
 ```
-
-If you want to refer to `gpt.ps1` from other scripts, keep in mind that piping data to the script will require some additional code in the script. Examples are provided in the `example` folder.
-
-## Usage
 
 Once installed, you can simply run `gpt.ps1` to start the script, which will print the help message if you don't provide arguments.
 

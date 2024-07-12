@@ -110,11 +110,11 @@ if ((-not $python) -and (Test-Command "conda")) {
             }
         } else {
             Write-Host "Python command leads to the Microsoft Store app."
-            Write-Host "First, either install Conda (install miniforge and run ``conda init powershell``)`nor install Python (and add it to the path, or pass it on the command line, e.g. ``setup.ps -python c:\path\python.exe``)" -ErrorAction Stop
+            Write-Host "First, either install Conda (install miniforge and run ``conda init powershell``)`nor install Python (and add it to the path, or pass it on the command line, e.g. ``setup.ps1 -python c:\path\python.exe``)" -ErrorAction Stop
         }
     } else {
         Write-Host "Error: Neiter Conda nor Python is available."
-        Write-Host "First, either install Conda (install miniforge and run ``conda init powershell``)`nor install Python (and add it to the path, or pass it on the command line, e.g. ``setup.ps -python c:\path\python.exe``)" -ErrorAction Stop
+        Write-Host "First, either install Conda (install miniforge and run ``conda init powershell``)`nor install Python (and add it to the path, or pass it on the command line, e.g. ``setup.ps1 -python c:\path\python.exe``)" -ErrorAction Stop
     }
     $conda = $false
 }
