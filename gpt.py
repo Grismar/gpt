@@ -42,6 +42,8 @@ def print_help():
     print('    List all stored conversations.')
     print('  --model / -m <model>')
     print('    Specify the model to use. Options are: gpt-3.5, gpt-4, gpt-4o')
+    print('  --pipe / -p')
+    print('    Force read from stdin as a file, needed on some terminals.')
     print('  --query / -q <query>')
     print('    Provide the query to start or continue a conversation.')
     print('  --replay / -r / -p / <conversation_id>')
@@ -205,6 +207,8 @@ def main(cfg: Config):
     else:
         model = 'gpt-4o'
 
+    pipe = ('pipe' in cfg and cfg['pipe']) or (not sys.stdin.isatty())
+
     # define a file_query, if a filename was passed
     # the file query will be passed as a second user query after the main query, if any
     if 'file' in cfg:
@@ -213,11 +217,11 @@ def main(cfg: Config):
         # keep all filenames except stdin '-'
         cfg['file'] = [fn for fn in cfg['file'] if fn != '-']
         # if there is data, add stdin to the list
-        if not sys.stdin.isatty():
+        if pipe:
             cfg['file'] = cfg['file'] + ['-']
     else:
         # if there is data set 'file' to stdin
-        if not sys.stdin.isatty():
+        if pipe:
             cfg['file'] = ['-']
 
     # read all files, including stdin if provided
@@ -329,5 +333,5 @@ if __name__ == '__main__':
     main(Config.startup(aliases={
         'c': 'continue', 'cont': 'continue', 'k': 'api_key', 'key': 'api_key', 'd': 'delete',
         'del': 'delete', 'q': 'query', 'r': 'replay', 'm': 'model', 'l': 'list', 'x': 'reset',
-        'h': 'help', 'f': 'file', 'dak': 'delete_api_key'
+        'h': 'help', 'f': 'file', 'dak': 'delete_api_key', 'p': 'pipe'
     }))
