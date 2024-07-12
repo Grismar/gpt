@@ -1,7 +1,8 @@
 $originalWorkingDirectory = Get-Location
 
 $scriptDirectory = Split-Path -Path $MyInvocation.MyCommand.Definition -Parent
-Set-Location -Path $scriptDirectory
+$parentDirectory = Split-Path -Path $scriptDirectory -Parent
+Set-Location -Path $parentDirectory
 
 # configuration
 $envFolder = ".\.venv"
@@ -53,8 +54,8 @@ if ((Test-Path "$envFolder") -and (Test-CondaEnv $envFolder)) {
     Invoke-Deactivate -conda $true
 
     Write-Host "Conda environment found. Removing..."
-    Write-Host "> conda env remove --yes --prefix ./.venv"
-    conda env remove --yes --prefix ./.venv
+    Write-Host "> conda env remove --yes --prefix $envFolder"
+    conda env remove --yes --prefix $envFolder
 }
 
 if ((Test-Path "$envFolder") -and (Test-Venv $envFolder)) {
@@ -62,8 +63,8 @@ if ((Test-Path "$envFolder") -and (Test-Venv $envFolder)) {
     Invoke-Deactivate -conda $false
 
     Write-Host "Virtualenv environment found. Removing..."
-    Write-Host "> Remove-Item ./.venv -Recurse -Force -Confirm:`$false"
-    Remove-Item ./.venv -Recurse -Force -Confirm:$false
+    Write-Host "> Remove-Item $envFolder -Recurse -Force -Confirm:`$false"
+    Remove-Item $envFolder -Recurse -Force -Confirm:$false
 }
 
 Set-Location $originalWorkingDirectory
