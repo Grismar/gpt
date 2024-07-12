@@ -53,6 +53,8 @@ PS C:\Users\john.doe> gpt -k <an actual API key here> -dak -q "How do I remove t
 PS C:\Users\john.doe>
 ```
 
+If you want to refer to `gpt.ps1` from other scripts, keep in mind that piping data to the script will require some additional code in the script. Examples are provided in the `example` folder.
+
 ## Usage
 
 Once installed, you can simply run `gpt.ps1` to start the script, which will print the help message if you don't provide arguments.
