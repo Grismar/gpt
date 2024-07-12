@@ -1,4 +1,6 @@
 import os
+import sys
+import fileinput
 import win32cred
 import json
 from pathlib import Path
@@ -15,7 +17,9 @@ Please provide concise answers with a minimum of added explanation,
 keeping in mind that they will be displayed on a text console from a CLI, 
 specifically PowerShell. Format responses as a single line description 
 if possible, or use only a few, and provide any code or examples on a new line. 
-Multiple examples should be on separate lines.
+Multiple examples should be on separate lines. If an answer would include 
+Get-WmiObject, use Get-CimInstance instead. If additional text is provided,
+base your answer on that content.
 """
 
 
@@ -204,13 +208,24 @@ def main(cfg: Config):
     # define a file_query, if a filename was passed
     # the file query will be passed as a second user query after the main query, if any
     if 'file' in cfg:
-        if not Path(cfg['file']).exists():
-            print(f'File "{cfg["file"]}" not found.')
-            exit(1)
-        print('Current: ', os.getcwd())
-        with open(cfg['file'], 'r') as f:
-            file_query = f.read()
+        if isinstance(cfg['file'], str):
+            cfg['file'] = [cfg['file']]
+        # keep all filenames except stdin '-'
+        cfg['file'] = [fn for fn in cfg['file'] if fn != '-']
+        # if there is data, add stdin to the list
+        if not sys.stdin.isatty():
+            cfg['file'] = cfg['file'] + ['-']
     else:
+        # if there is data set 'file' to stdin
+        if not sys.stdin.isatty():
+            cfg['file'] = ['-']
+
+    # read all files, including stdin if provided
+    file_query = ''
+    if cfg['file']:
+        for line in fileinput.input(files=cfg['file'], encoding="utf-8"):
+            file_query += line
+    if not file_query:
         file_query = None
 
     # retrieve the API key (or store if provided, or delete/forget if specified)

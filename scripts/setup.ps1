@@ -69,7 +69,7 @@ if ((-not $python) -and (Test-Command "conda")) {
     if (-not (Test-Path "$envFolder") -or -not (Test-CondaEnv $envFolder)) {
         Write-Host "Conda environment not found or invalid. Creating..."
         Write-Host "> conda create --yes --prefix $envFolder python=3.10"
-        conda create --yes --prefix $envFolder python=3.10
+        conda create --yes --prefix $envFolder --file environment.yml
     } else {
         Write-Host "Conda environment found and valid."
     }
@@ -100,6 +100,12 @@ if ((-not $python) -and (Test-Command "conda")) {
             Write-Host "> $envFolder\Scripts\activate"
             & $envFolder\Scripts\activate
             $conda = $false
+
+            if (Test-Path $requirementsFile) {
+                Write-Host "Installing requirements..."
+                Write-Host "> pip install -r $requirementsFile"
+                pip install -r $requirementsFile
+            }
         } else {
             Write-Error "Python command leads to the Microsoft Store app."
             Write-Error "Either install Conda (install miniforge and run ``conda init powershell``) or install Python (add it to the path, or pass it on the command line, e.g. ``setup.ps -python c:\path\python.exe``)" -ErrorAction Stop
@@ -108,16 +114,6 @@ if ((-not $python) -and (Test-Command "conda")) {
         Write-Error "Error: Neiter Conda nor Python is available."
         Write-Error "Either install Conda (install miniforge and run ``conda init powershell``) or install Python (add it to the path, or pass it on the command line, e.g. ``setup.ps -python c:\path\python.exe``)" -ErrorAction Stop
     }
-}
-
-# install requirements
-if (Test-Path $requirementsFile) {
-    Write-Host "Installing requirements..."
-    Write-Host "> pip install -r $requirementsFile"
-    pip install -r $requirementsFile
-} else {
-    Invoke-Deactivate -conda $conda
-    Write-Error "Requirements file not found." -ErrorAction Stop
 }
 
 Invoke-Deactivate -conda $conda
