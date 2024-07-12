@@ -59,7 +59,14 @@ $pythonArgs = @()
 foreach ($arg in $args) {
     $pythonArgs += $arg
 }
-& python .\gpt.py @pythonArgs
+
+# piped data gets cached, but this is not an issue since it needs to be fully read before passsing it to the API
+$pipedData = $input | Out-String
+if (-not [string]::IsNullOrEmpty($pipedData)) {
+    $pipedData | & python .\gpt.py @pythonArgs
+} else {
+    & python .\gpt.py @pythonArgs
+}
 
 Invoke-Deactivate -conda $conda -silent $true
 
