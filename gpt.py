@@ -4,6 +4,7 @@ import fileinput
 import win32cred
 import json
 from pathlib import Path
+from typing import Union
 
 from openai import OpenAI
 from rich.markdown import Markdown
@@ -69,7 +70,7 @@ def store_api_key(target_name: str, api_key_value: str) -> None:
     win32cred.CredWrite(credential, 0)
 
 
-def retrieve_api_key(target_name: str) -> str | None:
+def retrieve_api_key(target_name: str) -> Union[str, None]:
     try:
         credential = win32cred.CredRead(target_name, win32cred.CRED_TYPE_GENERIC, 0)
         return credential['CredentialBlob'].decode('utf16')
