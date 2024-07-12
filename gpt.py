@@ -222,7 +222,7 @@ def main(cfg: Config):
 
     # read all files, including stdin if provided
     file_query = ''
-    if cfg['file']:
+    if 'file' in cfg and cfg['file']:
         for line in fileinput.input(files=cfg['file'], encoding="utf-8"):
             file_query += line
     if not file_query:
