@@ -68,8 +68,8 @@ if ((-not $python) -and (Test-Command "conda")) {
     # check if the conda environment exists and is valid
     if (-not (Test-Path "$envFolder") -or -not (Test-CondaEnv $envFolder)) {
         Write-Host "Conda environment not found or invalid. Creating..."
-        Write-Host "> conda create --yes --prefix $envFolder python=3.10"
-        conda create --yes --prefix $envFolder --file environment.yml
+        Write-Host "> conda env create --yes --prefix $envFolder --file environment.yml"
+        conda env create --yes --prefix $envFolder --file environment.yml
     } else {
         Write-Host "Conda environment found and valid."
     }
