@@ -77,12 +77,14 @@ if ((-not $python) -and (Test-Command "conda")) {
     Write-Host "> conda activate $envFolder"
     conda activate $envFolder
     $conda = $true
+    $active = $true
 } else {
-    if ($null -eq $python) {
+    if (-not $python) {
         Write-Host "Conda is not available, looking for Python."
         $python = "python"
     }
     # check if python is available
+    $active = $false
     if (Test-Command $python) {
         # check if Python is not the MS Store app
         $pythonPath = (Get-Command $python).Source
@@ -99,7 +101,7 @@ if ((-not $python) -and (Test-Command "conda")) {
             # activate the venv
             Write-Host "> $envFolder\Scripts\activate"
             & $envFolder\Scripts\activate
-            $conda = $false
+            $active = $true
 
             if (Test-Path $requirementsFile) {
                 Write-Host "Installing requirements..."
@@ -108,14 +110,17 @@ if ((-not $python) -and (Test-Command "conda")) {
             }
         } else {
             Write-Host "Python command leads to the Microsoft Store app."
-            Write-Host "Either install Conda (install miniforge and run ``conda init powershell``) or install Python (add it to the path, or pass it on the command line, e.g. ``setup.ps -python c:\path\python.exe``)" -ErrorAction Stop
+            Write-Host "First, either install Conda (install miniforge and run ``conda init powershell``)`nor install Python (and add it to the path, or pass it on the command line, e.g. ``setup.ps -python c:\path\python.exe``)" -ErrorAction Stop
         }
     } else {
         Write-Host "Error: Neiter Conda nor Python is available."
-        Write-Host "Either install Conda (install miniforge and run ``conda init powershell``) or install Python (add it to the path, or pass it on the command line, e.g. ``setup.ps -python c:\path\python.exe``)" -ErrorAction Stop
+        Write-Host "First, either install Conda (install miniforge and run ``conda init powershell``)`nor install Python (and add it to the path, or pass it on the command line, e.g. ``setup.ps -python c:\path\python.exe``)" -ErrorAction Stop
     }
+    $conda = $false
 }
 
-Invoke-Deactivate -conda $conda
+if ($active) {
+    Invoke-Deactivate -conda $conda
+}
 
 Set-Location $originalWorkingDirectory
