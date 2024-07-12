@@ -107,12 +107,12 @@ if ((-not $python) -and (Test-Command "conda")) {
                 pip install -r $requirementsFile
             }
         } else {
-            Write-Error "Python command leads to the Microsoft Store app."
-            Write-Error "Either install Conda (install miniforge and run ``conda init powershell``) or install Python (add it to the path, or pass it on the command line, e.g. ``setup.ps -python c:\path\python.exe``)" -ErrorAction Stop
+            Write-Host "Python command leads to the Microsoft Store app."
+            Write-Host "Either install Conda (install miniforge and run ``conda init powershell``) or install Python (add it to the path, or pass it on the command line, e.g. ``setup.ps -python c:\path\python.exe``)" -ErrorAction Stop
         }
     } else {
-        Write-Error "Error: Neiter Conda nor Python is available."
-        Write-Error "Either install Conda (install miniforge and run ``conda init powershell``) or install Python (add it to the path, or pass it on the command line, e.g. ``setup.ps -python c:\path\python.exe``)" -ErrorAction Stop
+        Write-Host "Error: Neiter Conda nor Python is available."
+        Write-Host "Either install Conda (install miniforge and run ``conda init powershell``) or install Python (add it to the path, or pass it on the command line, e.g. ``setup.ps -python c:\path\python.exe``)" -ErrorAction Stop
     }
 }
 
