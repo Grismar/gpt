@@ -18,7 +18,7 @@ scripts\setup.ps1 -python "C:\path\to\python.exe"
 
 This will create a virtualenv environment.
 
-Once created, the requirements will from [requirements.txt](requirements.txt) will be installed.
+Once created, the requirements from [requirements.txt](requirements.txt) will be installed.
 
 After installation, you can run the script by calling `gpt.ps1` from the root of the repository.
 ```commandline
@@ -107,7 +107,7 @@ To upload a file over SSH from PowerShell using a .pem key, specify the key with
 
  scp -i C:\path\to\keyfile.pem C:\path\to\localfile.txt user@remotehost:/path/to/remotedir/
 
-PS C:\Users\john.doe> gpt -c 1 -q "does this also work for downloding files?"
+PS C:\Users\john.doe> gpt -c 1 -q "does this also work for downloading files?"
 Yes, you can also download files using scp with similar syntax:
 
  scp -i C:\path\to\keyfile.pem user@remotehost:/path/to/remotefile.txt C:\path\to\localdir\
