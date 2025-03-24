@@ -39,6 +39,8 @@ def print_help():
     print('    Attach the contents of the file to the conversation.')
     print('  --help / -h')
     print('    Print this help message.')
+    print('  --interactive / -i')
+    print('    Start an interactive session.')
     print('  --list / -l')
     print('    List all stored conversations.')
     print('  --model / -m <model>')
@@ -257,18 +259,28 @@ def main(cfg: Config):
     # retrieve the API key (or store if provided, or delete/forget if specified)
     api_key = manage_api_key(cfg)
 
+    interactive = 'interactive' in cfg and cfg['interactive']
+
     # if there is an actual query to pose to GPT, make the interaction
-    if query is not None or file_query is not None:
-        conversation.append({
-            "role": "user",
-            "content": query,
-        })
+    while interactive or (query is not None or file_query is not None):
+        if interactive and query is None:
+            query = input('> ')
+            if query.lower() in ['exit', 'quit', 'q', '/q', 'x', '/x', 'exit()', 'quit()']:
+                break
+
+        if query is not None:
+            conversation.append({
+                "role": "user",
+                "content": query,
+            })
+            query = None  # only add this query once
 
         if file_query is not None:
             conversation.append({
                 "role": "user",
                 "content": file_query,
             })
+            file_query = None  # only add file_query once
 
         client = OpenAI(
             api_key=api_key,
@@ -355,5 +367,5 @@ if __name__ == '__main__':
     main(Config.startup(aliases={
         'c': 'continue', 'cont': 'continue', 'k': 'api_key', 'key': 'api_key', 'd': 'delete',
         'del': 'delete', 'q': 'query', 'r': 'replay', 'm': 'model', 'l': 'list', 'x': 'reset',
-        'h': 'help', 'f': 'file', 'dak': 'delete_api_key', 'p': 'pipe'
+        'h': 'help', 'f': 'file', 'dak': 'delete_api_key', 'p': 'pipe', 'i': 'interactive'
     }))
