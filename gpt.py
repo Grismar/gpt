@@ -109,6 +109,27 @@ def manage_api_key(cfg: Config) -> str:
     return api_key
 
 
+def is_input_piped():
+    """More explicit check if input is being piped into the program, to avoid issues in IDEs."""
+    # Check if stdin is not connected to a terminal
+    if not os.isatty(sys.stdin.fileno()):
+        try:
+            # Attempt to read a small amount of data from stdin
+            # If data is available, it's likely piped input
+            import msvcrt  # Windows-specific module
+            if msvcrt.kbhit():
+                return True
+        except ImportError:
+            # On non-Windows systems, use select if available
+            try:
+                import select
+                return select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], [])
+            except (OSError, ImportError):
+                # If select fails, assume no piped input
+                pass
+    return False
+
+
 def main(cfg: Config):
     console = Console()
 
@@ -208,7 +229,7 @@ def main(cfg: Config):
     else:
         model = 'gpt-4o'
 
-    pipe = ('pipe' in cfg and cfg['pipe']) or (not sys.stdin.isatty())
+    pipe = ('pipe' in cfg and cfg['pipe']) or is_input_piped()
 
     # define a file_query, if a filename was passed
     # the file query will be passed as a second user query after the main query, if any
