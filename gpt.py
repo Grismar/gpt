@@ -50,7 +50,7 @@ def print_help():
     print('  --query / -q <query>')
     print('    Provide the query to start or continue a conversation.')
     print('  --replay / -r / -p / <conversation_id>')
-    print('    Replay a conversation with the given ID.')
+    print('    Replay a conversation with the given ID. (making it the current one)')
     print('  --reset / -x [<conversation_id [conversation_id ...]>]')
     print('    Reset stored conversations, retain conversations with any given ID(s).')
     print('Examples:')
@@ -118,6 +118,7 @@ def is_input_piped():
         try:
             # Attempt to read a small amount of data from stdin
             # If data is available, it's likely piped input
+            # noinspection PyUnresolvedReferences
             import msvcrt  # Windows-specific module
             if msvcrt.kbhit():
                 return True
@@ -185,6 +186,10 @@ def main(cfg: Config):
                 else:
                     console.print(Markdown(interaction["content"]))
                 prompt = 'prompt'
+
+            conversations['last'] = cfg['replay']
+            with open(conversations_path, 'w') as f:
+                f.write(json.dumps(conversations))
             exit(0)
 
     # select a specific conversation to continue base on the --continue switch
