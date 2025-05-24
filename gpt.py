@@ -182,7 +182,7 @@ def main(cfg: Config):
             prompt = cfg['replay']
             for interaction in interactions:
                 if interaction['role'] == 'user':
-                    console.print(Markdown(f'**{prompt}**> "{interaction["content"]}"'))
+                    console.print(Markdown(f'> **{prompt}**> "{interaction["content"]}"'))
                 else:
                     console.print(Markdown(interaction["content"]))
                 prompt = 'prompt'
@@ -351,7 +351,7 @@ def main(cfg: Config):
                 conversations.pop('last')
 
     # save the current conversation if any
-    if query is not None:
+    if conversation:
         if 'continue' in cfg:
             last = cfg['continue']
         else:

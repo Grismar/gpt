@@ -1,1 +1,0 @@
-@powershell -File "%~dp0/gpt/gpt.ps1" %*
