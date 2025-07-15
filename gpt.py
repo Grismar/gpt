@@ -136,6 +136,46 @@ def is_input_piped():
 def main(cfg: Config):
     console = Console()
 
+    # if a query is provided, and no arguments, try to map the first word to an option
+    if cfg.parameters and not cfg.from_arguments:
+        single = len(cfg.parameters) == 1
+        option = cfg.parameters[0]
+        if single and option.lower() in ['help', 'h']:
+            cfg['help'] = True
+        elif single and option.lower() in ['list', 'l']:
+            cfg['list'] = True
+        elif len(cfg.parameters) == 2 and option.lower() in ['replay', 'r', 'p']:
+            if cfg.parameters[1].isdigit():
+                cfg['replay'] = cfg.parameters[1]
+                cfg.parameters.remove(cfg.parameters[1])
+            else:
+                cfg['replay'] = True
+        elif option.lower() in ['interactive', 'i']:
+            cfg['interactive'] = True
+        elif option.lower() in ['continue', 'cont', 'c']:
+            if not single and cfg.parameters[1].isdigit():
+                cfg['continue'] = cfg.parameters[1]
+                cfg.parameters.remove(cfg.parameters[1])
+            else:
+                cfg['continue'] = True
+        elif option.lower() in ['delete', 'del', 'd'] and all(p.isdigit() for p in cfg.parameters[1:]):
+            cfg['delete'] = cfg.parameters[1:]
+            cfg.parameters = [option]
+        elif option.lower() in ['reset', 'x']:
+            if single:
+                cfg['reset'] = True
+            elif all(p.isdigit() for p in cfg.parameters[1:]):
+                cfg['reset'] = cfg.parameters[1:]
+                cfg.parameters = [option]
+            else:
+                option = None
+        else:
+            option = None
+        if option is not None:
+            # from_arguments is updated as if the option was from an argument
+            cfg.from_arguments.append(option)
+            cfg.parameters = cfg.parameters[1:]
+
     # print help text if requested, or if no arguments are provided
     if 'help' in cfg or not cfg.parameters and not cfg.from_arguments:
         print_help()
@@ -351,14 +391,11 @@ def main(cfg: Config):
                 conversations.pop('last')
 
     # save the current conversation if any
-    if conversation:
+    if conversation and len(conversation) > 1:
         if 'continue' in cfg:
             last = cfg['continue']
         else:
-            n = 1
-            while str(n) in conversations:
-                n += 1
-            last = str(n)
+            last = str(max(int(n) for n in conversations if n != 'last') + 1)
         conversations[last] = conversation
         conversations['last'] = last
 
