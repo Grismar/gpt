@@ -395,7 +395,7 @@ def main(cfg: Config):
         if 'continue' in cfg:
             last = cfg['continue']
         else:
-            last = str(max(int(n) for n in conversations if n != 'last') + 1)
+            last = str(0 if not conversations else max(int(n) for n in conversations if n != 'last') + 1)
         conversations[last] = conversation
         conversations['last'] = last
 
